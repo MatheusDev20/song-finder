@@ -9,6 +9,7 @@ export class PromptController {
   @Post()
   async handle(@Body() data: PromptInputDTO) {
     const { content } = data;
+
     const responseBody = await this.provider.respond(content);
 
     return ok(responseBody);

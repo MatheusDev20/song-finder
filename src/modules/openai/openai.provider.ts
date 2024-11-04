@@ -16,18 +16,17 @@ class OpenAIProvider {
 
   constructor(private assistant: ModelBehaviour) {
     this.client = new OpenAI();
-    this.model = 'gpt-4o';
+    this.model = process.env.MODEL;
   }
 
-  async create(content: string) {
+  async complete(content: string) {
     const completion = await this.client.chat.completions.create({
       model: this.model,
       messages: await this.formatMessages(content),
       response_format: zodResponseFormat(StructuredData, 'songs'),
     });
-
-    const recomendations = JSON.parse(completion.choices[0].message.content);
-    return recomendations;
+    const [response] = completion.choices;
+    return JSON.parse(response.message.content);
   }
 
   private formatMessages = async (
