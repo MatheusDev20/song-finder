@@ -6,6 +6,7 @@ export class PromptProvider {
   constructor(private LLMProvider: OpenAIProvider) {}
 
   async respond(content: string) {
-    return await this.LLMProvider.create(content);
+    const completion = await this.LLMProvider.complete(content);
+    return completion;
   }
 }
