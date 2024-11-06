@@ -1,5 +1,9 @@
-export class SpotfyProvider {
-  constructor() {}
+import { FireExternalRequest } from '../http/fire-request';
 
-  async getSongDetails() {}
+export class SpotfyProvider {
+  constructor(private fireRequestProvider: FireExternalRequest) {}
+
+  async getSongDetails() {
+    this.fireRequestProvider.fire({ path: '/song-details' });
+  }
 }

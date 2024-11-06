@@ -5,8 +5,8 @@ import { OpenAIProvider } from 'src/modules/openai/openai.provider';
 export class PromptProvider {
   constructor(private LLMProvider: OpenAIProvider) {}
 
-  async respond(content: string) {
-    const completion = await this.LLMProvider.complete(content);
+  async respond<T>(content: string): Promise<T> {
+    const completion = await this.LLMProvider.complete<T>(content);
     return completion;
   }
 }

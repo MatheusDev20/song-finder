@@ -4,12 +4,12 @@ export type HttpResponse<T> = {
   message?: string;
 };
 
-export const ok = <T = any>(data: any): HttpResponse<T> => ({
+export const ok = <T>(data: T): HttpResponse<T> => ({
   statusCode: 200,
   body: data,
 });
 
-export const authenticated = <T = any>(data: any): HttpResponse<T> => ({
+export const authenticated = <T>(data: any): HttpResponse<T> => ({
   statusCode: 200,
   body: data,
 });

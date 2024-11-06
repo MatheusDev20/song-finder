@@ -8,25 +8,33 @@ import {
   ChatCompletionSystemMessageParam,
 } from 'openai/resources';
 import { StructuredData } from './schemas';
+import { CustomLogger } from '../logger/logger.provider';
 
 @Injectable()
 class OpenAIProvider {
   private readonly client: OpenAI;
   private readonly model: string;
 
-  constructor(private assistant: ModelBehaviour) {
+  constructor(
+    private assistant: ModelBehaviour,
+    private logger: CustomLogger,
+  ) {
     this.client = new OpenAI();
     this.model = process.env.MODEL;
   }
 
-  async complete(content: string) {
+  async complete<T>(content: string): Promise<T> {
     const completion = await this.client.chat.completions.create({
       model: this.model,
       messages: await this.formatMessages(content),
       response_format: zodResponseFormat(StructuredData, 'songs'),
     });
+
     const [response] = completion.choices;
-    return JSON.parse(response.message.content);
+    const parsed = JSON.parse(response.message.content);
+    this.logger.generatedCompletion(parsed);
+
+    return parsed;
   }
 
   private formatMessages = async (
