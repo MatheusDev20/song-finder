@@ -8,6 +8,7 @@ export type HttpClient = {
 
 export type RequestDetails = {
   path: string;
+  headers?: Record<string, string>;
 };
 
 type SongCompletion = {
@@ -26,4 +27,8 @@ export type PromptInput = {
 
 export type LoggerFunctions = {
   generatedCompletion: (completion: string) => void;
+};
+
+export type AuthProvider = {
+  getAuthHeaders: () => Promise<any>;
 };

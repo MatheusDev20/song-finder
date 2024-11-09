@@ -8,7 +8,10 @@ export class SongController {
   @Get('/')
   async handle(@Query() songName: string) {
     console.log('Song Name', songName);
-    await this.provider.fire({ path: '/song-details' });
+    await this.provider.fire({
+      path: 'tracks/4cOdK2wGLETKBW3PvgPWqT',
+    });
+
     return ok({ message: 'Hello World' });
   }
 }
