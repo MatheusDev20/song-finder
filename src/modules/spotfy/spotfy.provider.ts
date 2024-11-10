@@ -18,15 +18,16 @@ export class SpotfyProvider {
   }: ProviderInput): Promise<ProviderOutput> {
     const path = '/search';
     const queryParams = {
-      q: `track:${songName}artist:${artistName}`,
+      q: `track:${songName} artist:${artistName}`,
       type: 'track',
+      limit: '1',
     };
 
     const response = await this.fireRequestProvider.fire({
       path: path,
       queryParams,
     });
-    console.log(response);
+    console.log('Res', response.tracks);
 
     return { data: response };
   }
