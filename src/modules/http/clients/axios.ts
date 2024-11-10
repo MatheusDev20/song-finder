@@ -25,14 +25,30 @@ export class AxiosClient implements HttpClient {
     this.requireAuth = options.requireAuth;
   }
 
+  private convertQueryParams(path: string, params: object): string {
+    return (
+      `${path}?` +
+      Object.entries(params)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&')
+    );
+  }
+
   async GET(details: RequestDetails) {
     const options = { ...details };
+    if (options.queryParams)
+      options.path = this.convertQueryParams(details.path, details.queryParams);
+
     if (this.requireAuth) {
       const authHeaders = await this.authProvider.getAuthHeaders();
 
       options.headers = authHeaders;
     }
 
-    return this.instance.get(details.path, { headers: options.headers });
+    const httpResponse = await this.instance.get(options.path, {
+      headers: options.headers,
+    });
+
+    return httpResponse.data;
   }
 }

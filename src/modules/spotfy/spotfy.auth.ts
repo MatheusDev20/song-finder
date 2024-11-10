@@ -60,6 +60,7 @@ export class SpotfyAuthProvider implements AuthProvider {
       const res = await axios[options.method](url, params, {
         headers: rest.headers,
       });
+
       const { access_token } = res.data;
       if (access_token)
         await this.cacheManager.set(

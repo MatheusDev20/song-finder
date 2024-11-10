@@ -9,6 +9,7 @@ export type HttpClient = {
 export type RequestDetails = {
   path: string;
   headers?: Record<string, string>;
+  queryParams?: Record<string, string>;
 };
 
 type SongCompletion = {
