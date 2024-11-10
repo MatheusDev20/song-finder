@@ -17,8 +17,18 @@ type SongCompletion = {
   name: string;
 };
 
-export type SongRecomendationCompletion = {
-  recomendations: SongCompletion[];
+type MovieCompletion = {
+  title: string;
+  director: string;
+};
+
+export type CompletionsCategories = {
+  music: SongCompletion;
+  movies: MovieCompletion;
+};
+
+export type RecomendationCompletion<T> = {
+  recomendations: T[];
 };
 
 export type PromptInput = {

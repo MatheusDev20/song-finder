@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { ModelBehaviour } from './assistants/provider';
 import { zodResponseFormat } from 'openai/helpers/zod';
@@ -9,6 +9,7 @@ import {
 } from 'openai/resources';
 import { StructuredData } from './schemas';
 import { CustomLogger } from '../logger/logger.provider';
+import { assistantResponsibleFor } from './assistants/models';
 
 @Injectable()
 class OpenAIProvider {
@@ -23,11 +24,13 @@ class OpenAIProvider {
     this.model = process.env.MODEL;
   }
 
-  async complete<T>(content: string): Promise<T> {
+  async complete<T>(content: string, recomendationType: string): Promise<T> {
+    const messages = await this.formatMessages(content, recomendationType);
+
     const completion = await this.client.chat.completions.create({
       model: this.model,
-      messages: await this.formatMessages(content),
-      response_format: zodResponseFormat(StructuredData, 'songs'),
+      messages,
+      response_format: zodResponseFormat(StructuredData, recomendationType),
     });
 
     const [response] = completion.choices;
@@ -39,8 +42,19 @@ class OpenAIProvider {
 
   private formatMessages = async (
     content: string,
+    recomendationType: string,
   ): Promise<ChatCompletionMessageParam[]> => {
-    const behaviour = await this.assistant.selectAssistant('Morrisey');
+    const behaviour = await this.assistant.selectAssistant(
+      assistantResponsibleFor[recomendationType],
+      recomendationType,
+    );
+
+    if (!content.includes(recomendationType)) {
+      throw new BadRequestException(
+        'Prompt Content must contain the word of the recomendation type',
+      );
+    }
+
     const actSystem = {
       role: 'system',
       content: [

@@ -2,18 +2,23 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { PromptInputDTO } from './inputs';
 import { PromptProvider } from './prompt.provider';
 import { ok } from 'src/shared/http/common-responses';
-import { SongRecomendationCompletion } from 'src/@types';
+import { CompletionsCategories, RecomendationCompletion } from 'src/@types';
 
 @Controller('prompt')
 export class PromptController {
   constructor(private provider: PromptProvider) {}
 
   @Post()
-  async handleSongCompletion(@Body() data: PromptInputDTO) {
-    const { content } = data;
+  async handleCompletion(@Body() data: PromptInputDTO) {
+    const { content, type } = data;
 
-    const responseBody =
-      await this.provider.respond<SongRecomendationCompletion>(content);
+    const completionType = type as keyof CompletionsCategories;
+
+    const responseBody = await this.provider.respond<
+      RecomendationCompletion<
+        Pick<CompletionsCategories, typeof completionType>
+      >
+    >({ content, recomendationType: completionType });
 
     return ok(responseBody);
   }
