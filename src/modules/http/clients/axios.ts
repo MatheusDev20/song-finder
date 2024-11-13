@@ -3,11 +3,12 @@ import axios, { AxiosInstance } from 'axios';
 import { HttpClient, RequestDetails } from 'src/@types';
 import { AUTH_PROVIDER, AXIOS_OPTIONS } from '../injection-tokens';
 import { SpotfyAuthProvider } from 'src/modules/spotfy/spotfy.auth';
+import { TmdbAuthProvider } from 'src/modules/tmdb/tmdb.auth';
 
 export type InstanceParams = {
   baseUrl: string;
   requireAuth: boolean;
-  authClass: typeof SpotfyAuthProvider;
+  authClass: typeof SpotfyAuthProvider | typeof TmdbAuthProvider;
 };
 
 @Injectable()

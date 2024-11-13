@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { FireExternalRequest } from '../http/fire-request';
+import { songDetailsParser } from './outputs';
+import { SongDetailsDTO } from 'src/@types';
 
 type ProviderInput = {
   songName: string;
   artistName: string;
 };
-type ProviderOutput = {
-  data: any;
+type ProviderOutput<T> = {
+  data: T;
 };
 
 @Injectable()
 export class SpotfyProvider {
   constructor(private fireRequestProvider: FireExternalRequest) {}
+
   async getSongDetails({
     songName,
     artistName,
-  }: ProviderInput): Promise<ProviderOutput> {
+  }: ProviderInput): Promise<ProviderOutput<SongDetailsDTO>> {
     const path = '/search';
     const queryParams = {
       q: `track:${songName} artist:${artistName}`,
@@ -27,8 +30,9 @@ export class SpotfyProvider {
       path: path,
       queryParams,
     });
+
     console.log('Res', response.tracks);
 
-    return { data: response };
+    return { data: songDetailsParser(response) };
   }
 }

@@ -10,6 +10,6 @@ export class SongController {
   @Get('/')
   async handle(@Query() { songName, artistName }: GetSongDetailsInput) {
     const res = await this.provider.getSongDetails({ songName, artistName });
-    return ok(res);
+    return ok(res.data);
   }
 }
