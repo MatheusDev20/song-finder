@@ -13,7 +13,7 @@ export const songDetailsParser = (data: any): SongDetailsDTO => {
 
   return {
     songName: item.name,
-    artistName: item.artists[0].name,
+    artistName: item.artists[0].name ?? '',
     album: useFull,
     spotfy_external_id: item.id,
   };
